@@ -1,0 +1,22 @@
+<div class="logo"></div>
+<input type="text" class="task-input" placeholder="Введите задачу..." [(ngModel)]="taskTitle" (keyup.enter)="addTask()">
+
+<div cdkDropList (cdkDropListDropped)="drop($event)">
+  <div cdkDrag class="task-item" *ngFor="let task of tasks; trackBy: trackByFn" [class.completed]="task.completed" [class.expanded]="task === expandedTask">
+    <div class="dragHandle" cdkDragHandle></div>
+    <div class="task-complete">
+      <input type="checkbox" [(ngModel)]="task.completed">
+    </div>
+    <div class="task-item-content" (click)="taskExpand(task)">
+      <div *ngIf="!task.editing; else editingTask" class="task-item-title" (dblclick)="editTask(task)">
+        {{ task.title }}
+      </div>
+      <ng-template #editingTask>
+        <textarea rows="5" type="text" class="task-item-edit" [(ngModel)]="task.title" (blur)="doneEdit(task)" (keyup.enter)="doneEdit(task)" (keyup.esc)="cancelEdit(task)" autofocus></textarea>
+      </ng-template>
+    </div>
+    <div class="task-remove-btn" (click)="deleteTask(task.id)">
+      <span>&times;</span>
+    </div>
+  </div>
+</div>
