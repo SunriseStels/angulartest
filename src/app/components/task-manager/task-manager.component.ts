@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Task} from '../../interfaces/task';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import * as moment from 'moment'
 
 @Component({
   selector: 'task-manager',
@@ -13,6 +14,7 @@ export class TaskManagerComponent implements OnInit {
   taskTitle: string;
   idForTask: number;
   beforeEdit: string;
+  taskDate: string;
   expandedTask: Task;
 
   constructor() { }
@@ -20,6 +22,7 @@ export class TaskManagerComponent implements OnInit {
   ngOnInit() {
     this.taskTitle = '';
     this.beforeEdit = '';
+    this.taskDate = '';
     this.idForTask = 2;
     this.tasks = [
       {
@@ -27,6 +30,7 @@ export class TaskManagerComponent implements OnInit {
         'title' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pretium lorem libero, ut malesuada erat vehicula eu. Duis eleifend, sapien eu sagittis hendrerit, est augue elementum erat, sit amet malesuada ex ipsum id ex. Sed efficitur ipsum tortor, vitae suscipit est sodales a. Nunc et hendrerit lorem. Vestibulum id suscipit est, ut laoreet sapien. Nulla feugiat risus et lacus pharetra rhoncus. Nunc laoreet varius nisi, nec pellentesque arcu vestibulum in. Donec at aliquet nibh, eget vestibulum nibh. Sed hendrerit augue eget lacus consequat convallis. Cras mollis, massa eu congue placerat, nisl tellus dignissim eros, sit amet porta tortor sapien ut lectus. Ut ac lectus et mi tincidunt bibendum et et neque. Cras rhoncus metus leo, sed tempor est interdum quis.',
         'completed' : false,
         'editing' : false,
+        'date' : new Date(),
       }
     ]
   }
@@ -42,11 +46,12 @@ export class TaskManagerComponent implements OnInit {
       title: this.taskTitle,
       completed: false,
       editing: false,
+      date: new Date(this.taskDate || null),
     })
 
+    this.taskDate = '';
     this.taskTitle = '';
     this.idForTask++;
-
   }
 
   deleteTask(id: number) {
@@ -79,6 +84,14 @@ export class TaskManagerComponent implements OnInit {
 
   trackByFn(index, item) {
     return item.id;
+  }
+
+  middleState(task: Task): boolean {
+    return moment(task.date).diff(moment(), 'days') <= 3;
+  }
+
+  endState(task: Task): boolean {
+    return moment(task.date).diff(moment(), 'days') < 0;
   }
 
   drop(event: CdkDragDrop<string[]>) {

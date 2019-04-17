@@ -1,8 +1,10 @@
 <div class="logo"></div>
-<input type="text" class="task-input" placeholder="Введите задачу..." [(ngModel)]="taskTitle" (keyup.enter)="addTask()">
+<input type="text" class="task-input" placeholder="Введите задачу..." [(ngModel)]="taskTitle">
+<input type="date" class="task-date" [(ngModel)]="taskDate">
+<button (click)="addTask()">Add task</button>
 
 <div cdkDropList (cdkDropListDropped)="drop($event)">
-  <div cdkDrag class="task-item" *ngFor="let task of tasks; trackBy: trackByFn" [class.completed]="task.completed" [class.expanded]="task === expandedTask">
+  <div cdkDrag class="task-item" *ngFor="let task of tasks; trackBy: trackByFn" [class.completed]="task.completed" [class.task-item__middle]="middleState(task)" [class.task-item__end]="endState(task)" [class.expanded]="task === expandedTask">
     <div class="dragHandle" cdkDragHandle></div>
     <div class="task-complete">
       <input type="checkbox" [(ngModel)]="task.completed">
@@ -14,6 +16,9 @@
       <ng-template #editingTask>
         <textarea rows="5" type="text" class="task-item-edit" [(ngModel)]="task.title" (blur)="doneEdit(task)" (keyup.enter)="doneEdit(task)" (keyup.esc)="cancelEdit(task)" autofocus></textarea>
       </ng-template>
+    </div>
+    <div class="task-date-title">
+      {{ task.date | date: 'dd.MM.yyyy' }}
     </div>
     <div class="task-remove-btn" (click)="deleteTask(task.id)">
       <span>&times;</span>
